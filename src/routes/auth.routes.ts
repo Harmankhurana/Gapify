@@ -23,6 +23,14 @@ authRouter.post('/api/v1/auth/signup', (req: Request, res: Response) => {
             message: "Incorrect format",
         });
     }
+
+    const { name, email, password } = parsedDataWithSuccess.data;
+
+    try {
+        
+    } catch (e) {
+        
+    }
 });
 
 authRouter.post('/api/v1/auth/signin', (req: Request, res: Response) => {
