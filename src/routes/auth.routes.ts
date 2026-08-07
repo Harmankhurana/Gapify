@@ -10,7 +10,19 @@ dotenv.config();
 const authRouter = Router();
 
 authRouter.post('/api/v1/auth/signup', (req: Request, res: Response) => {
+    const requiredBody = z.object({
+        name: z.string(),
+        email: z.string(),
+        password: z.string(),
+    });
 
+    const parsedDataWithSuccess = requiredBody.safeParse(req.body);
+
+    if(!parsedDataWithSuccess.success) {
+        return res.status(400).json({
+            message: "Incorrect format",
+        });
+    }
 });
 
 authRouter.post('/api/v1/auth/signin', (req: Request, res: Response) => {
