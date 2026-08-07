@@ -5,11 +5,13 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { UserModel } from '../database/ageGap.db.js';
 
 dotenv.config();
 const authRouter = Router();
+const saltRounds = 10
 
-authRouter.post('/api/v1/auth/signup', (req: Request, res: Response) => {
+authRouter.post('/api/v1/auth/signup', async (req: Request, res: Response) => {
     const requiredBody = z.object({
         name: z.string(),
         email: z.string(),
@@ -27,9 +29,23 @@ authRouter.post('/api/v1/auth/signup', (req: Request, res: Response) => {
     const { name, email, password } = parsedDataWithSuccess.data;
 
     try {
-        
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        await UserModel.create({
+            name: name,
+            email: email,
+            password: hashedPassword,
+        });
+
+        res.status(200).json({
+            message: "You're Signed Up",
+        });
+
     } catch (e) {
-        
+        res.status(500).json({
+            message: "Something went wrong while Signing Up",
+            error: e,
+        });
     }
 });
 
