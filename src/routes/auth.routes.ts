@@ -11,7 +11,7 @@ dotenv.config();
 const authRouter = Router();
 const saltRounds = 10
 
-authRouter.post('/api/v1/auth/signup', async (req: Request, res: Response) => {
+authRouter.post('/signup', async (req: Request, res: Response) => {
     const requiredBody = z.object({
         name: z.string(),
         email: z.string(),
@@ -49,7 +49,8 @@ authRouter.post('/api/v1/auth/signup', async (req: Request, res: Response) => {
     }
 });
 
-authRouter.post('/api/v1/auth/signin', (req: Request, res: Response) => {
+authRouter.post('/signin', async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
 });
 
