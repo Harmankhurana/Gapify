@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+// exporting mongoDB connection in index.ts
 export async function connectDB(): Promise<void> {
   const uri = process.env.MONGO_URI;
 
