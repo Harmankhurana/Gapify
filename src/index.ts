@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { authRouter } from "./routes/auth.routes.js";
-import { ageGapRouter } from "./routes/ageGap.routes.js";
+import { ageRouter } from "./routes/age.routes.js";
 import { connectDB } from "./config/db.js";
 
 dotenv.config();
@@ -22,7 +22,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 app.use("/api/v1/auth", authRouter);
 
 // API endpoint which is used for generating the Age gaps between people
-app.use("api/v1/gap", ageGapRouter);
+app.use("api/v1/age", ageRouter);
 
 async function startServer(): Promise<void> {
   try {
