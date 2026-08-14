@@ -12,11 +12,15 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// API endpoint which checks the status of server
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
+// API endpoint which uses for authentication
 app.use("/api/v1/auth", authRouter);
+
+// API endpoint which is used for generating the Age gaps between people
 // app.use("api/v1/gap", gapRouter);
 
 async function startServer(): Promise<void> {
