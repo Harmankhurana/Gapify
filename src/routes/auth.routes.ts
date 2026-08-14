@@ -5,7 +5,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserModel } from '../database/ageGap.db.js';
+import { UserModel } from '../database/auth.db.js';
+import { JWT_PASSWORD } from '../config/db.js';
 
 dotenv.config();
 const authRouter = Router();
@@ -13,7 +14,8 @@ const saltRounds = 10
 
 authRouter.post('/signup', async (req: Request, res: Response) => {
     const requiredBody = z.object({
-        name: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
         email: z.string(),
         password: z.string(),
     });
@@ -26,13 +28,14 @@ authRouter.post('/signup', async (req: Request, res: Response) => {
         });
     }
 
-    const { name, email, password } = parsedDataWithSuccess.data;
+    const { firstName, lastName, email, password } = parsedDataWithSuccess.data;
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         await UserModel.create({
-            name: name,
+            firstName: firstName,
+            lastName: lastName,
             email: email,
             password: hashedPassword,
         });
@@ -49,9 +52,26 @@ authRouter.post('/signup', async (req: Request, res: Response) => {
     }
 });
 
-authRouter.post('/signin', async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+authRouter.post('/api/v1/signin', async (req: Request, res: Response) => {
+    const email =  req.body.email;
+    const password = req.body.password;
 
+    const existingUser = await UserModel.findOne({ email, password });
+
+    if(existingUser) {
+        const token = jwt.sign({
+            id: existingUser._id,
+        }, JWT_PASSWORD);
+        console.log(token);
+
+        res.json({
+            token,
+        });
+    } else {
+        res.json({
+            message: "Incorrect Credentials",
+        });
+    };
 });
 
 export {
